@@ -13,10 +13,11 @@ const musica = new Audio('/sons/luna-rise-part-one.mp3')
 const beepSom = new Audio('/sons/beep.mp3')
 const playSom = new Audio('/sons/play.wav')
 const pauseSom = new Audio('/sons/pause.mp3')
+const tempoNaTela = document.querySelector('#timer')
 
 musica.loop = true
 
-let tempoDecorridoEmSegundos = 5
+let tempoDecorridoEmSegundos = 1500
 let intervaloId = null
 
 musicaFocoInput.addEventListener('change', () => {
@@ -28,21 +29,25 @@ musicaFocoInput.addEventListener('change', () => {
 })
 
 focoBt.addEventListener('click', () => {
+    tempoDecorridoEmSegundos = 1500
     alterarContexto('foco')
     focoBt.classList.add('active')
 });
 
 curtoBt.addEventListener('click', () => {
+    tempoDecorridoEmSegundos = 300
     alterarContexto('descanso-curto')
     curtoBt.classList.add('active')
 });
 
 longoBt.addEventListener('click', () => {
+    tempoDecorridoEmSegundos = 900
     alterarContexto('descanso-longo')
     longoBt.classList.add('active')
 });
 
 function alterarContexto(contexto) {
+    mostrarTempo()
     botoes.forEach(function (contexto) {
         contexto.classList.remove('active')
     })
@@ -73,13 +78,13 @@ function alterarContexto(contexto) {
 
 const contagemRegressiva = () => {
     if (tempoDecorridoEmSegundos <= 0) {
-        // beepSom.play();
+        beepSom.play();
         alert('Tempo finalizado!')
         zerar()
         return
     }
     tempoDecorridoEmSegundos -= 1
-    console.log('Temporizador:' + tempoDecorridoEmSegundos)
+    mostrarTempo()
 }
 
 startPauseBt.addEventListener('click', iniciarOuPausar)
@@ -104,3 +109,10 @@ function zerar() {
     intervaloId = null
 
 }
+
+function mostrarTempo() {
+    const tempo = new Date(tempoDecorridoEmSegundos * 1000)
+    const tempoFormatado = tempo.toLocaleTimeString('pt-Br', { minute: '2-digit', second: '2-digit' })
+    tempoNaTela.innerHTML = `${tempoFormatado}`
+}
+mostrarTempo()
